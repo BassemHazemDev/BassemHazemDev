@@ -60,47 +60,89 @@
 ## 🛠️ Tech Stack
 
 <div align="center">
-  <img src="https://skillicons.dev/icons?i=js" height="40" alt="javascript logo"  />
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
+    <img src="https://skillicons.dev/icons?i=js" height="40" alt="javascript logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=ts" height="40" alt="typescript logo"  />
+  <a href="https://www.typescriptlang.org/docs/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=ts" height="40" alt="typescript logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=nodejs" height="40" alt="nodejs logo"  />
+  <a href="https://nodejs.org/docs/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=nodejs" height="40" alt="nodejs logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=express" height="40" alt="express logo"  />
+  <a href="https://expressjs.com/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=express" height="40" alt="express logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=react" height="40" alt="react logo"  />
+  <a href="https://react.dev/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=react" height="40" alt="react logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=nextjs" height="40" alt="nextjs logo"  />
+  <a href="https://nextjs.org/docs" target="_blank">
+    <img src="https://skillicons.dev/icons?i=nextjs" height="40" alt="nextjs logo"  />
+  </a>
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" height="40" alt="mongodb logo"  />
+  <a href="https://www.mongodb.com/docs/" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" height="40" alt="mongodb logo"  />
+  </a>
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" height="40" alt="mysql logo"  />
+  <a href="https://dev.mysql.com/doc/" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" height="40" alt="mysql logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=prisma" height="40" alt="prisma logo"  />
+  <a href="https://www.prisma.io/docs" target="_blank">
+    <img src="https://skillicons.dev/icons?i=prisma" height="40" alt="prisma logo"  />
+  </a>
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo"  />
+  <a href="https://www.postgresql.org/docs/" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=html" height="40" alt="html5 logo"  />
+  <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">
+    <img src="https://skillicons.dev/icons?i=html" height="40" alt="html5 logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=css" height="40" alt="css logo"  />
+  <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">
+    <img src="https://skillicons.dev/icons?i=css" height="40" alt="css logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=tailwind" height="40" alt="tailwindcss logo"  />
+  <a href="https://tailwindcss.com/docs" target="_blank">
+    <img src="https://skillicons.dev/icons?i=tailwind" height="40" alt="tailwindcss logo"  />
+  </a>
   <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" height="40" alt="bootstrap logo"  />
+  <a href="https://getbootstrap.com/docs/" target="_blank">
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" height="40" alt="bootstrap logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=figma" height="40" alt="figma logo"  />
+  <a href="https://www.figma.com/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=figma" height="40" alt="figma logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=xd" height="40" alt="xd logo"  />
+  <a href="https://helpx.adobe.com/xd/user-guide.html" target="_blank">
+    <img src="https://skillicons.dev/icons?i=xd" height="40" alt="xd logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=postman" height="40" alt="postman logo"  />
+  <a href="https://learning.postman.com/docs/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=postman" height="40" alt="postman logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=vercel" height="40" alt="vercel logo"  />
+  <a href="https://vercel.com/docs" target="_blank">
+    <img src="https://skillicons.dev/icons?i=vercel" height="40" alt="vercel logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=vite" height="40" alt="vite logo"  />
+  <a href="https://vitejs.dev/guide/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=vite" height="40" alt="vite logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=vscode" height="40" alt="vscode logo"  />
+  <a href="https://code.visualstudio.com/docs" target="_blank">
+    <img src="https://skillicons.dev/icons?i=vscode" height="40" alt="vscode logo"  />
+  </a>
   <img width="12" />
-  <img src="https://skillicons.dev/icons?i=py" height="40" alt="python logo"  />
+  <a href="https://docs.python.org/" target="_blank">
+    <img src="https://skillicons.dev/icons?i=py" height="40" alt="python logo"  />
+  </a>
 </div>
 
 <br>
