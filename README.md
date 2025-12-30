@@ -14,12 +14,12 @@
 
 <p align="left">
   I'm a result-driven <b>Full-Stack Web Developer</b> specializing in the <b>MERN stack</b>.<br><br>
-  🚀 I specialize in building high-quality, scalable web applications<br>
-  💡 My passion for coding began in childhood, constantly improving my craft<br>
-  🎯 Skilled communicator and mentor for aspiring coders<br>
-  ✨ Client-focused, translating complex requirements into clean, functional code<br>
-  🤝 Committed to timely delivery and achieving successful outcomes<br><br>
-  💪 I'm passionate about taking on new challenges and exploring opportunities. Let's collaborate to bring your project to life!
+  <li> I specialize in building high-quality, scalable web applications<br>
+  <li> My passion for coding began in childhood, constantly improving my craft<br>
+  <li> Skilled communicator and mentor for aspiring coders<br>
+  <li> Client-focused, translating complex requirements into clean, functional code<br>
+  <li> Committed to timely delivery and achieving successful outcomes<br><br>
+  <li> I'm passionate about taking on new challenges and exploring opportunities. Let's collaborate to bring your project to life!
 </p>
 
 <br>
