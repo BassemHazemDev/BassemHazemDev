@@ -1,152 +1,158 @@
 <div align="center">
-  <img style="width: 100%" src="https://capsule-render.vercel.app/api?type=waving&height=120&section=header&reversal=false&text=Bassem%20Hazem&fontSize=70&fontColor=FFFFFF&fontAlign=50&fontAlignY=35&stroke=-&strokeWidth=0&animation=twinkling&desc=Full%20Stack%20Web%20Developer&descSize=22&descAlign=50&descAlignY=65&textBg=false&color=gradient"  />
+  <!-- Header Banner -->
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=180&section=header&reversal=false&text=Bassem%20Hazem&fontSize=70&fontColor=FFFFFF&fontAlign=50&fontAlignY=38&stroke=-&strokeWidth=0&animation=twinkling&desc=Full%20Stack%20Web%20Developer&descSize=20&descAlign=50&descAlignY=62&textBg=false&color=gradient" width="100%" alt="Header Banner" />
+
+  <!-- Animated Typing Tagline -->
+  <a href="https://git.io/typing-svg">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=58A6FF&center=true&vCenter=true&multiline=false&width=600&height=50&lines=Full-Stack+MERN+Developer+%F0%9F%9A%80;Building+Scalable+%26+Modern+Web+Apps+%E2%9C%A8;TypeScript+%26+Next.js+Enthusiast+%F0%9F%92%BB;Turning+Ideas+Into+High-Performance+Code+%F0%9F%94%A5" alt="Typing SVG" />
+  </a>
+
+  <br>
+
+  <!-- Quick Social Pill Badges -->
+  <p align="center">
+    <a href="https://www.linkedin.com/in/bassem-hazem-7902b32a2/" target="_blank">
+      <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+    </a>
+    <a href="mailto:bassemhazemmahmouddev@gmail.com" target="_blank">
+      <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail" />
+    </a>
+    <a href="https://wa.me/2001205802555" target="_blank">
+      <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
+    </a>
+    <a href="https://t.me/01205802555" target="_blank">
+      <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
+    </a>
+  </p>
+</div>
+
+<br>
+
+---
+
+### 👨‍💻 About Me
+
+<table border="0">
+  <tr>
+    <td width="35%" align="center" valign="middle">
+      <img src="./mywall copy2.jpg" alt="Bassem Hazem" width="220" style="border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);" />
+    </td>
+    <td width="65%" valign="top">
+      <p>
+        Hey there! 👋 I'm <b>Bassem Hazem</b>, a passionate and results-driven <b>Full-Stack Web Developer</b> specializing in the modern <b>MERN Stack</b>, <b>Next.js</b>, and <b>TypeScript</b>.
+      </p>
+      <ul>
+        <li>🚀 <b>Engineering:</b> Building scalable, high-performance web applications with clean architecture.</li>
+        <li>💡 <b>Problem Solving:</b> Translating complex product requirements into intuitive, reliable code.</li>
+        <li>🌱 <b>Continuous Learning:</b> Constantly refining my craft in cloud-native technologies, API design, and system optimization.</li>
+        <li>🤝 <b>Collaboration:</b> Strong communicator, proactive team player, and mentor for aspiring developers.</li>
+        <li>🎯 <b>Current Focus:</b> Architecting full-stack SaaS solutions with React, Next.js, Node.js, and SQL/NoSQL databases.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+---
+
+### 🛠️ Tech Stack & Tooling
+
+<div align="center">
+
+#### 🌐 Frontend Development
+<a href="https://skillicons.dev">
+  <img src="https://skillicons.dev/icons?i=react,nextjs,ts,js,html,css,tailwind,bootstrap" alt="Frontend Skills" />
+</a>
+
+<br><br>
+
+#### ⚙️ Backend & API Engineering
+<a href="https://skillicons.dev">
+  <img src="https://skillicons.dev/icons?i=nodejs,express,py,postman" alt="Backend Skills" />
+</a>
+
+<br><br>
+
+#### 🗄️ Databases & ORM
+<a href="https://skillicons.dev">
+  <img src="https://skillicons.dev/icons?i=mongodb,postgres,mysql,prisma" alt="Database Skills" />
+</a>
+
+<br><br>
+
+#### 🧰 DevOps, Tools & Design
+<a href="https://skillicons.dev">
+  <img src="https://skillicons.dev/icons?i=git,github,vscode,vite,vercel,figma,xd" alt="DevOps and Tools" />
+</a>
+
+</div>
+
+<br>
+
+---
+
+### 📊 GitHub Analytics & Coding Activity
+
+<div align="center">
+  <!-- GitHub Streak Stats -->
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=BassemHazemDev&theme=tokyonight&hide_border=true&background=0d1117" alt="GitHub Streak Stats" width="49%" />
+  <!-- GitHub Top Languages -->
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=BassemHazemDev&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=7aa2f7&text_color=c0caf5" alt="Top Languages" width="49%" />
 </div>
 
 <br>
 
 <div align="center">
-  <img height="250" src="./mywall copy2.jpg" alt="Profile Image" style="border-radius: 10px;" />
+  <!-- GitHub Stats Card -->
+  <img src="https://github-readme-stats.vercel.app/api?username=BassemHazemDev&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=7aa2f7&text_color=c0caf5&icon_color=bb9af7" alt="Bassem's GitHub Stats" width="85%" />
 </div>
 
 <br>
 
-## 👨‍💻 About Me
+---
 
-<p align="left">
-  I'm a result-driven <b>Full-Stack Web Developer</b> specializing in the <b>MERN stack</b>.<br><br>
-  <li> I specialize in building high-quality, scalable web applications<br>
-  <li> My passion for coding began in childhood, constantly improving my craft<br>
-  <li> Skilled communicator and mentor for aspiring coders<br>
-  <li> Client-focused, translating complex requirements into clean, functional code<br>
-  <li> Committed to timely delivery and achieving successful outcomes<br><br>
-  <li> I'm passionate about taking on new challenges and exploring opportunities. Let's collaborate to bring your project to life!
-</p>
+### 🕹️ Pac-Man Contribution Graph
+
+<div align="center">
+  <p><i>Watch Pac-Man navigate through my daily GitHub contributions! 👻</i></p>
+  
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BassemHazemDev/BassemHazemDev/output/pacman-contribution-graph-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/BassemHazemDev/BassemHazemDev/output/pacman-contribution-graph.svg">
+    <img alt="Pac-Man Contribution Graph" src="https://raw.githubusercontent.com/BassemHazemDev/BassemHazemDev/output/pacman-contribution-graph.svg" width="100%">
+  </picture>
+</div>
 
 <br>
 
-## 📫 Connect With Me
+---
+
+### 📫 Connect With Me
 
 <div align="center">
+  <p>Let's collaborate on exciting projects, discuss new opportunities, or just say hello!</p>
+  
   <a href="https://www.linkedin.com/in/bassem-hazem-7902b32a2/" target="_blank">
-    <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/linkedin/default.svg" width="42" height="30" alt="linkedin logo"  />
+    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
+  &nbsp;
   <a href="mailto:bassemhazemmahmouddev@gmail.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/gmail/default.svg" width="42" height="30" alt="gmail logo"  />
+    <img src="https://img.shields.io/badge/Email_Me-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
   </a>
-  <a href="https://t.me/01205802555" target="_blank">
-    <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/telegram/default.svg" width="42" height="30" alt="telegram logo"  />
-  </a>
+  &nbsp;
   <a href="https://wa.me/2001205802555" target="_blank">
-    <img src="https://raw.githubusercontent.com/maurodesouza/profile-readme-generator/master/src/assets/icons/social/whatsapp/default.svg" width="42" height="30" alt="whatsapp logo"  />
+    <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp" />
   </a>
-</div>
-
-<br>
-
-## 📊 GitHub Activity
-
-<div align="center">
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BassemHazemDev/BassemHazemDev/output/pacman-contribution-graph-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/BassemHazemDev/BassemHazemDev/output/pacman-contribution-graph.svg">
-  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/BassemHazemDev/BassemHazemDev/output/pacman-contribution-graph.svg">
-</picture>
-
-</div>
-
-<br>
-
-## 🛠️ Tech Stack
-
-<div align="center">
-  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-    <img src="https://skillicons.dev/icons?i=js" height="40" alt="javascript logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://www.typescriptlang.org/docs/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=ts" height="40" alt="typescript logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://nodejs.org/docs/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=nodejs" height="40" alt="nodejs logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://expressjs.com/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=express" height="40" alt="express logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://react.dev/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=react" height="40" alt="react logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://nextjs.org/docs" target="_blank">
-    <img src="https://skillicons.dev/icons?i=nextjs" height="40" alt="nextjs logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://www.mongodb.com/docs/" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" height="40" alt="mongodb logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://dev.mysql.com/doc/" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" height="40" alt="mysql logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://www.prisma.io/docs" target="_blank">
-    <img src="https://skillicons.dev/icons?i=prisma" height="40" alt="prisma logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://www.postgresql.org/docs/" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">
-    <img src="https://skillicons.dev/icons?i=html" height="40" alt="html5 logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">
-    <img src="https://skillicons.dev/icons?i=css" height="40" alt="css logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://tailwindcss.com/docs" target="_blank">
-    <img src="https://skillicons.dev/icons?i=tailwind" height="40" alt="tailwindcss logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://getbootstrap.com/docs/" target="_blank">
-    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" height="40" alt="bootstrap logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://www.figma.com/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=figma" height="40" alt="figma logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://helpx.adobe.com/xd/user-guide.html" target="_blank">
-    <img src="https://skillicons.dev/icons?i=xd" height="40" alt="xd logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://learning.postman.com/docs/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=postman" height="40" alt="postman logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://vercel.com/docs" target="_blank">
-    <img src="https://skillicons.dev/icons?i=vercel" height="40" alt="vercel logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://vitejs.dev/guide/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=vite" height="40" alt="vite logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://code.visualstudio.com/docs" target="_blank">
-    <img src="https://skillicons.dev/icons?i=vscode" height="40" alt="vscode logo"  />
-  </a>
-  <img width="12" />
-  <a href="https://docs.python.org/" target="_blank">
-    <img src="https://skillicons.dev/icons?i=py" height="40" alt="python logo"  />
+  &nbsp;
+  <a href="https://t.me/01205802555" target="_blank">
+    <img src="https://img.shields.io/badge/Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
   </a>
 </div>
 
 <br>
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&color=gradient" />
+  <!-- Footer Wave -->
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=gradient" width="100%" alt="Footer Banner" />
 </div>
