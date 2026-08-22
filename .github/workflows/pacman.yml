@@ -2,7 +2,7 @@ name: Generate pacman animation
  
 on:
   schedule: 
-    - cron: "* */12 * * *"
+    - cron: "0 */12 * * *"
 
   workflow_dispatch:
 
@@ -22,6 +22,7 @@ jobs:
         uses: abozanona/pacman-contribution-graph@main
         with:
           github_user_name: ${{ github.repository_owner }}
+          github_token: ${{ secrets.PACMAN_TOKEN || secrets.GITHUB_TOKEN }}
 
 
       - name: push pacman-contribution-graph.svg to the output branch
