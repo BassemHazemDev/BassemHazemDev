@@ -95,8 +95,8 @@
 ### 📊 GitHub Analytics & Coding Activity
 
 <div align="center">
-  <!-- GitHub Streak Stats -->
-  <img src="https://streak-stats.demolab.com?user=BassemHazemDev&theme=tokyonight&hide_border=true&background=0d1117" alt="GitHub Streak Stats" width="49%" />
+  <!-- GitHub Stats Card -->
+  <img src="https://github-readme-stats-fast.vercel.app/api?username=BassemHazemDev&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=7aa2f7&text_color=c0caf5&icon_color=bb9af7" alt="Bassem's GitHub Stats" width="49%" />
   <!-- GitHub Top Languages -->
   <img src="https://github-readme-stats-fast.vercel.app/api/top-langs/?username=BassemHazemDev&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=7aa2f7&text_color=c0caf5" alt="Top Languages" width="49%" />
 </div>
@@ -104,8 +104,8 @@
 <br>
 
 <div align="center">
-  <!-- GitHub Stats Card -->
-  <img src="https://github-readme-stats-fast.vercel.app/api?username=BassemHazemDev&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&title_color=7aa2f7&text_color=c0caf5&icon_color=bb9af7" alt="Bassem's GitHub Stats" width="85%" />
+  <!-- GitHub Contribution Activity Graph -->
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=BassemHazemDev&theme=tokyo-night&bg_color=0d1117&color=7aa2f7&line=bb9af7&point=7dcfff&area=true&hide_border=true" alt="Activity Graph" width="100%" />
 </div>
 
 <br>
