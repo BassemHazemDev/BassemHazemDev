@@ -1,36 +1,25 @@
-import sharp from "sharp";
 import { c, W, PAD } from "../lib/theme.mjs";
 import { Doc, measure } from "../lib/text.mjs";
 import { card } from "../lib/frame.mjs";
+import { inlineImage } from "../lib/sprite.mjs";
 import { profile, pub } from "../data.mjs";
 
 const H = 300;
 const AVATAR = 212;
+const LOGO = 132;
 
-/** Square crop centred on the face, wide enough to keep the shoulders in frame. */
-async function avatar() {
-  const file = pub("frames/desktop/frame_0121.webp");
-  const { width } = await sharp(file).metadata();
-  const size = Math.round(width * 0.733);
-  const buf = await sharp(file)
-    .extract({ left: Math.round(width * 0.097), top: Math.round(width * 0.05), width: size, height: size })
-    .resize(AVATAR * 2)
-    .webp({ quality: 78 })
-    .toBuffer();
-  return `data:image/webp;base64,${buf.toString("base64")}`;
-}
-
-/** Static intro card: avatar on the left, a plain greeting and two lines about the work. */
+/** Static intro card: the {#;} mark on the left, a plain greeting and two lines about the work. */
 export async function hero() {
   const doc = new Doc(W, H);
   const bg = card(doc, { lights: [[150, 150, 300, c.cyan, 0.2], [W, H, 320, c.emerald, 0.1]], drift: false });
   const ax = PAD;
   const ay = (H - AVATAR) / 2;
   doc.defs.push(
-    `<clipPath id="av"><rect x="${ax}" y="${ay}" width="${AVATAR}" height="${AVATAR}" rx="28"/></clipPath>`,
+    `<radialGradient id="plate" cx=".5" cy=".45" r=".75"><stop offset="0" stop-color="#0f2a3a"/><stop offset="1" stop-color="${c.bg2}"/></radialGradient>`,
     `<linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.cyan}"/><stop offset="1" stop-color="${c.emerald}"/></linearGradient>`,
   );
 
+  const logo = await inlineImage(pub("logo-512.png"), { width: LOGO * 2, quality: 92 });
   const x = ax + AVATAR + 40;
   const hi = "Hi, I'm ";
   const hiW = measure(hi, { size: 46, font: "d", tracking: -0.02 });
@@ -39,7 +28,8 @@ export async function hero() {
 
   const body =
     bg.open +
-    `<image href="${await avatar()}" x="${ax}" y="${ay}" width="${AVATAR}" height="${AVATAR}" clip-path="url(#av)"/>` +
+    `<rect x="${ax}" y="${ay}" width="${AVATAR}" height="${AVATAR}" rx="28" fill="url(#plate)"/>` +
+    `<image href="${logo.uri}" x="${ax + (AVATAR - LOGO) / 2}" y="${ay + (AVATAR - LOGO) / 2}" width="${LOGO}" height="${LOGO}"/>` +
     `<rect x="${ax}" y="${ay}" width="${AVATAR}" height="${AVATAR}" rx="28" fill="none" stroke="url(#ring)" stroke-width="2"/>` +
     doc.text("@BASSEMHAZEMDEV", { x, y: 78, size: 12.5, font: "c", fill: c.cyan, tracking: 0.28 }) +
     doc.text(hi, { x, y: 134, size: 46, font: "d", tracking: -0.02 }) +

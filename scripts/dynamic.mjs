@@ -72,7 +72,7 @@ const utc = (date) => new Date(`${date}T00:00:00Z`);
 
 // One game: Pac-Man clears the year, everything fades, the board respawns.
 // Times inside a cycle are fractions of it.
-const GAME = { tick: 0.11, run: 0.88, exit: 0.93, respawn: 0.97, scaredTicks: 30, maxSteps: 1100 };
+const GAME = { tick: 0.2, run: 0.9, exit: 0.94, respawn: 0.97, scaredTicks: 28, maxSteps: 1500 };
 const GHOSTS = [
   { colour: c.ember, wander: 0.15 },
   { colour: "#7aa7ff", wander: 0.4 },
@@ -95,26 +95,115 @@ function seeded(text) {
   };
 }
 
+const edge = (ax, ay, bx, by) => (ax < bx || ay < by ? `${ax},${ay}|${bx},${by}` : `${bx},${by}|${ax},${ay}`);
+
 /**
- * Plays the game on the grid, one cell per tick. Pac-Man heads for the nearest
- * uneaten day, keeping to straight runs and steering round ghosts; ghosts chase
- * him (each with its own tendency to wander) and run away after a power pellet.
+ * Lays maze walls on the lines between days. Walls are grown in straight runs and
+ * a wall is only kept if every cell can still be reached, so nothing gets sealed off.
+ * The ghost house is a small box in the middle with a door on top.
  */
-function simulate(levels, cols, seed) {
+function buildMaze(cols, seed) {
+  const rand = seeded(seed);
+  const walls = new Set();
+  const inside = (x, y) => x >= 0 && x < cols && y >= 0 && y < ROWS;
+  const open = (ax, ay, bx, by) => inside(bx, by) && !walls.has(edge(ax, ay, bx, by));
+  const connected = () => {
+    const seen = new Set(["0,0"]);
+    const queue = [[0, 0]];
+    while (queue.length) {
+      const [x, y] = queue.pop();
+      for (const [dx, dy] of DIRS) {
+        const k = `${x + dx},${y + dy}`;
+        if (!seen.has(k) && open(x, y, x + dx, y + dy)) {
+          seen.add(k);
+          queue.push([x + dx, y + dy]);
+        }
+      }
+    }
+    return seen.size === cols * ROWS;
+  };
+
+  const mid = Math.floor(cols / 2);
+  const house = { x1: mid - 1, x2: mid + 1, y1: 3, y2: 4 };
+  for (let x = house.x1; x <= house.x2; x++) {
+    if (x !== mid) walls.add(edge(x, house.y1 - 1, x, house.y1));
+    walls.add(edge(x, house.y2, x, house.y2 + 1));
+  }
+  for (let y = house.y1; y <= house.y2; y++) {
+    walls.add(edge(house.x1 - 1, y, house.x1, y));
+    walls.add(edge(house.x2, y, house.x2 + 1, y));
+  }
+  const nearHouse = (x, y) => x >= house.x1 - 1 && x <= house.x2 + 1 && y >= house.y1 - 1 && y <= house.y2 + 1;
+
+  for (let run = 0; run < cols * 1.8; run++) {
+    const horizontal = rand() < 0.6;
+    const length = 2 + Math.floor(rand() * (horizontal ? 5 : 3));
+    // A wall segment sits between cell (x, y) and its neighbour below (horizontal) or to the right (vertical).
+    let x = Math.floor(rand() * (cols - 1));
+    let y = Math.floor(rand() * (ROWS - 1));
+    for (let i = 0; i < length; i++) {
+      const [bx, by] = horizontal ? [x, y + 1] : [x + 1, y];
+      if (!inside(x, y) || !inside(bx, by) || nearHouse(x, y) || nearHouse(bx, by)) break;
+      const k = edge(x, y, bx, by);
+      if (!walls.has(k)) {
+        walls.add(k);
+        if (!connected()) {
+          walls.delete(k);
+          break;
+        }
+      }
+      if (horizontal) x++;
+      else y++;
+    }
+  }
+  return { cols, walls, open, mid, house };
+}
+
+/** Steps from one cell to every other cell, going round walls. */
+function distances(maze, from) {
+  const dist = new Map([[`${from.x},${from.y}`, 0]]);
+  let frontier = [[from.x, from.y]];
+  while (frontier.length) {
+    const next = [];
+    for (const [x, y] of frontier) {
+      const d = dist.get(`${x},${y}`);
+      for (const [dx, dy] of DIRS) {
+        const k = `${x + dx},${y + dy}`;
+        if (!dist.has(k) && maze.open(x, y, x + dx, y + dy)) {
+          dist.set(k, d + 1);
+          next.push([x + dx, y + dy]);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return dist;
+}
+
+/**
+ * Plays the game in the maze, one cell per tick. Pac-Man heads for the nearest
+ * uneaten day, keeping to straight runs and steering away from ghosts; ghosts
+ * chase him (each with its own tendency to wander) and flee after a power pellet.
+ */
+function simulate(levels, maze, seed) {
   const rand = seeded(seed);
   const pick = (list) => list[Math.floor(rand() * list.length)];
   const key = (x, y) => `${x},${y}`;
-  const inside = (x, y) => x >= 0 && x < cols && y >= 0 && y < ROWS;
-  const dist = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+  const near = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y) <= 1;
+  const exits = (a) => DIRS.map(([dx, dy]) => ({ dx, dy, x: a.x + dx, y: a.y + dy })).filter((m) => maze.open(a.x, a.y, m.x, m.y));
 
   const food = new Map([...levels].filter(([, level]) => level > 0));
   const eatenAt = new Map();
   const pellets = [];
   const pac = { x: 0, y: 3, dx: 1, dy: 0, path: [[0, 3]] };
-  const mid = Math.floor(cols / 2);
-  const ghosts = GHOSTS.map((g, i) => ({ ...g, x: mid - 1 + i, y: 3, dx: 0, dy: -1, path: [[mid - 1 + i, 3]] }));
+  const { mid, house } = maze;
+  const ghosts = GHOSTS.map((g, i) => {
+    const start = [mid - 1 + i, i === 1 ? house.y1 : house.y2];
+    return { ...g, x: start[0], y: start[1], dx: 0, dy: -1, path: [start] };
+  });
   let scaredUntil = -1;
   let target = null;
+  let toTarget = null;
 
   const eat = (tick) => {
     const k = key(pac.x, pac.y);
@@ -135,47 +224,48 @@ function simulate(levels, cols, seed) {
 
     // Pac-Man
     if (!target || !food.has(key(target.x, target.y))) {
+      const fromPac = distances(maze, pac);
       let best = Infinity;
       let nearest = [];
       for (const k of food.keys()) {
-        const [x, y] = k.split(",").map(Number);
-        const d = dist(pac, { x, y });
+        const d = fromPac.get(k) ?? Infinity;
         if (d < best) {
           best = d;
           nearest = [];
         }
-        if (d === best) nearest.push({ x, y });
+        if (d === best) nearest.push(k);
       }
-      target = pick(nearest);
+      const [x, y] = pick(nearest).split(",").map(Number);
+      target = { x, y };
+      toTarget = distances(maze, target);
     }
-    const danger = (x, y) => !scared && ghosts.some((g) => dist(g, { x, y }) <= 1);
-    const moves = DIRS.map(([dx, dy]) => ({ dx, dy, x: pac.x + dx, y: pac.y + dy })).filter((m) => inside(m.x, m.y));
+    const danger = (m) => !scared && ghosts.some((g) => near(g, m));
     const score = (m) =>
-      dist(m, target) * 10 +
-      (danger(m.x, m.y) ? 1000 : 0) +
+      toTarget.get(key(m.x, m.y)) * 10 +
+      (danger(m) ? 1000 : 0) +
       (m.dx === -pac.dx && m.dy === -pac.dy ? 6 : 0) -
       (m.dx === pac.dx && m.dy === pac.dy ? 3 : 0) +
       rand() * 4;
-    const step = moves.map((m) => ({ m, s: score(m) })).sort((a, b) => a.s - b.s)[0].m;
+    const step = exits(pac).map((m) => ({ m, s: score(m) })).sort((a, b) => a.s - b.s)[0].m;
     Object.assign(pac, { x: step.x, y: step.y, dx: step.dx, dy: step.dy });
     pac.path.push([pac.x, pac.y]);
     eat(tick);
 
-    // Ghosts: never reverse unless cornered, never walk onto Pac-Man or each other.
+    // Ghosts: never reverse unless cornered, never walk onto Pac-Man.
+    const toPac = distances(maze, pac);
     for (const g of ghosts) {
-      const free = (m) => inside(m.x, m.y) && !(m.x === pac.x && m.y === pac.y) && !ghosts.some((o) => o !== g && o.x === m.x && o.y === m.y);
-      const all = DIRS.map(([dx, dy]) => ({ dx, dy, x: g.x + dx, y: g.y + dy })).filter(free);
+      const all = exits(g).filter((m) => !(m.x === pac.x && m.y === pac.y));
       const forward = all.filter((m) => !(m.dx === -g.dx && m.dy === -g.dy));
       const options = forward.length ? forward : all;
       if (!options.length) {
-        // Boxed in: bounce in place for a tick so its clock stays in step with the others.
+        // Boxed in: wait a tick (drawn as a small hop so its clock stays in step).
         g.path.push([g.x, g.y]);
         continue;
       }
       let move;
       if (rand() < g.wander) move = pick(options);
       else {
-        const ranked = options.map((m) => ({ m, d: dist(m, pac) + rand() })).sort((a, b) => a.d - b.d);
+        const ranked = options.map((m) => ({ m, d: toPac.get(key(m.x, m.y)) + rand() })).sort((a, b) => a.d - b.d);
         move = (scared ? ranked.at(-1) : ranked[0]).m;
       }
       Object.assign(g, { x: move.x, y: move.y, dx: move.dx, dy: move.dy });
@@ -183,6 +273,24 @@ function simulate(levels, cols, seed) {
     }
   }
   return { steps: tick, eatenAt, pellets, pac: pac.path, ghosts: ghosts.map((g) => g.path) };
+}
+
+/** The maze walls as one stroked path, drawn in the gaps between cells. */
+function wallPath(maze, { x0, step, cell, gridTop }) {
+  const gap = (step - cell) / 2;
+  let d = "";
+  for (const k of maze.walls) {
+    const [[ax, ay], [bx, by]] = k.split("|").map((p) => p.split(",").map(Number));
+    if (ay === by) {
+      // side by side: a vertical wall between them
+      const x = r1(x0 + bx * step - gap);
+      d += `M${x} ${r1(gridTop + ay * step - gap)}V${r1(gridTop + (ay + 1) * step - gap)}`;
+    } else {
+      const y = r1(gridTop + by * step - gap);
+      d += `M${r1(x0 + ax * step - gap)} ${y}H${r1(x0 + (ax + 1) * step - gap)}`;
+    }
+  }
+  return `<path d="${d}" fill="none" stroke="${c.ink}" stroke-opacity=".8" stroke-width="1.6" stroke-linecap="round"/>`;
 }
 
 /** Pac-Man and the ghosts, each following its simulated route at one cell per tick. */
@@ -276,7 +384,9 @@ function contributionsSvg(days) {
 
   const levels = new Map();
   cols.forEach((week, i) => week.forEach((d) => levels.set(`${i},${d.dow}`, d.level)));
-  const game = simulate(levels, cols.length, `${days.at(-1).date}:${days.reduce((n, d) => n + d.count, 0)}`);
+  // The maze is the same every day; the game played in it changes with the data.
+  const maze = buildMaze(cols.length, USER);
+  const game = simulate(levels, maze, `${days.at(-1).date}:${days.reduce((n, d) => n + d.count, 0)}`);
   const cycle = Math.round((game.steps * GAME.tick) / GAME.run);
   let grid = "";
   let months = "";
@@ -307,7 +417,7 @@ function contributionsSvg(days) {
     }
   });
 
-  const marker = actors(game, { x0, step, cell, gridTop, cycle });
+  const marker = wallPath(maze, { x0, step, cell, gridTop }) + actors(game, { x0, step, cell, gridTop, cycle });
 
   const total = days.reduce((n, d) => n + d.count, 0);
   const active = days.filter((d) => d.count).length;
