@@ -1,2 +1,6 @@
 # Local preview files
 index.html
+
+# Build tooling
+node_modules/
+scripts/preview.html

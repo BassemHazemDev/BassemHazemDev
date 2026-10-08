@@ -1,3 +1,5 @@
+<a href="https://www.bassemhazem.com"><img src="./assets/hero.svg" width="100%" alt="Bassem Hazem — Full Stack Developer and Technical Project Manager" /></a>
+
 <div align="center">
   <!-- Header Banner -->
   <img src="https://capsule-render.vercel.app/api?type=waving&height=180&section=header&reversal=false&text=Bassem%20Hazem&fontSize=70&fontColor=FFFFFF&fontAlign=50&fontAlignY=38&stroke=-&strokeWidth=0&animation=twinkling&desc=Full%20Stack%20Web%20Developer&descSize=20&descAlign=50&descAlignY=62&textBg=false&color=gradient" width="100%" alt="Header Banner" />
