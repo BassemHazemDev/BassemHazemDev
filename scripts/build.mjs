@@ -2,9 +2,8 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { ROOT } from "./data.mjs";
 import { hero } from "./sections/hero.mjs";
-import { signatureSection, impactSection, experienceSection } from "./sections/story.mjs";
-import { workSection, stackSection } from "./sections/work.mjs";
-import { pills, headings, testimonialCards, footer } from "./sections/chrome.mjs";
+import { stackSection } from "./sections/stack.mjs";
+import { pills, headings, footer } from "./sections/chrome.mjs";
 
 const BUDGET_KB = { hero: 600 };
 const DEFAULT_BUDGET_KB = 150;
@@ -12,13 +11,8 @@ const DEFAULT_BUDGET_KB = 150;
 const sections = {
   hero,
   pills,
-  signature: signatureSection,
-  impact: impactSection,
-  experience: experienceSection,
   headings,
-  work: workSection,
   stack: stackSection,
-  quotes: testimonialCards,
   footer,
 };
 

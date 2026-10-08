@@ -1,8 +1,8 @@
 import { c, W } from "../lib/theme.mjs";
-import { Doc, measure, wrap } from "../lib/text.mjs";
+import { Doc, measure } from "../lib/text.mjs";
 import { card, eyebrow, arrow, BLINK } from "../lib/frame.mjs";
 import { inlineImage } from "../lib/sprite.mjs";
-import { testimonials, signatureClosing, pub } from "../data.mjs";
+import { signatureClosing, pub } from "../data.mjs";
 
 const PILLS = [
   { id: "site", label: "bassemhazem.com", primary: true },
@@ -39,47 +39,11 @@ export function pills() {
 /** Heading strips for sections that are made of several linked images. */
 export function headings() {
   const out = {};
-  for (const [id, index, title] of [
-    ["work", "04", "Selected work"],
-    ["writing", "06", "Writing"],
-    ["words", "08", "In their words"],
-  ]) {
+  for (const [id, index, title] of [["writing", "02", "Writing"]]) {
     const doc = new Doc(W, 60);
     const bg = card(doc, { lights: [[90, 30, 220, c.cyan, 0.16]], drift: false });
     out[`head-${id}`] = doc.render(bg.open + eyebrow(doc, index, title, { y: 35 }) + bg.close, { label: title });
   }
-  return out;
-}
-
-/** 08 — two quotes, each its own card so it can link to the author's LinkedIn. */
-export function testimonialCards() {
-  const cw = 432;
-  const p = 26;
-  const size = 15.5;
-  const lh = 1.6;
-  const opts = { size, font: "s" };
-  const maxLines = Math.max(...testimonials.map((t) => wrap(t.quote, cw - p * 2, opts).length));
-  const quoteTop = 92;
-  const quoteBottom = quoteTop + (maxLines - 1) * size * lh;
-  const H = Math.round(quoteBottom + 104);
-  const out = {};
-  testimonials.forEach((t, i) => {
-    const doc = new Doc(cw, H);
-    const bg = card(doc, { lights: [[i ? cw : 0, 0, 260, i ? c.emerald : c.cyan, 0.16]], drift: false });
-    const quote = doc.para(t.quote, { x: p, y: quoteTop, width: cw - p * 2, size, lineHeight: lh });
-    const [who, where] = t.role.split(" · ");
-    const body =
-      bg.open +
-      doc.text("“", { x: p - 4, y: 82, size: 84, font: "d", fill: i ? c.emerald : c.cyan, opacity: 0.55 }) +
-      quote.svg +
-      `<line x1="${p}" y1="${H - 78}" x2="${cw - p}" y2="${H - 78}" stroke="${c.line}"/>` +
-      doc.text(t.author, { x: p, y: H - 48, size: 15.5, font: "d" }) +
-      doc.text(who, { x: p, y: H - 28, size: 12, fill: c.muted }) +
-      (where ? doc.text(`· ${where}`, { x: p + measure(who, { size: 12 }) + 6, y: H - 28, size: 12, fill: c.muted, opacity: 0.75 }) : "") +
-      arrow(cw - p - 10, H - 58, 10, c.cyan, 1.7) +
-      bg.close;
-    out[`quote-${i + 1}`] = doc.render(body, { label: `“${t.quote}” — ${t.author}, ${t.role}` });
-  });
   return out;
 }
 

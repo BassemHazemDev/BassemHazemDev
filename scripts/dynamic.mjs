@@ -149,7 +149,7 @@ function contributionsSvg(days) {
 
   const body =
     bg.open +
-    eyebrow(doc, "07", "Contributions") +
+    eyebrow(doc, "03", "Contributions") +
     doc.outline(totalText, { x: PAD - 2, y: 138, size: 54, fill: "url(#val)", tracking: -0.02 }) +
     doc.text("contributions", { x: PAD + totalW + 12, y: 121, size: 14, fill: c.ink }) +
     doc.text("in the last year", { x: PAD + totalW + 12, y: 139, size: 14, fill: c.muted }) +

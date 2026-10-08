@@ -15,25 +15,6 @@
   <a href="https://wa.me/201205802555"><img src="./assets/pill-whatsapp.svg" height="40" alt="WhatsApp" /></a>
 </p>
 
-<img src="./assets/signature.svg" width="100%" alt="Signature. Each glyph of the {#;} mark is a working principle. Scope: every project starts with structure. Intent: every feature is tagged, tracked and prioritised. Delivery: work isn't done until it's shipped and running in production." />
-
-<img src="./assets/impact.svg" width="100%" alt="Impact. 15+ engineers led at RockAI Dev. Ranked #1 in the Special Computer Science Department. 3.88 GPA. 4 live products. 28 backend modules architected for Orion. 8 certifications." />
-
-<img src="./assets/experience.svg" width="100%" alt="Experience. Technical Project Manager at RockAI Dev, January 2026 to present. Full Stack Web Developer at RockAI Dev, November 2025 to January 2026. Software Developer Intern at the Digital Egypt Pioneers Initiative, June to December 2025." />
-
-<img src="./assets/head-work.svg" width="100%" alt="Selected work" />
-
-<p align="center">
-  <a href="https://orion.apextec.dev"><img src="./assets/work-orion.svg" width="49%" alt="Orion — AI-powered e-learning platform with a RAG study assistant. Next.js, Node.js, React Native, FastAPI, Qdrant, Gemini." /></a>
-  <a href="https://pay-flow-prod.vercel.app/"><img src="./assets/work-payflow.svg" width="49%" alt="PayFlow — CRM and billing platform with Stripe payments and AI insights. React, Vite, Tailwind, Express, MongoDB, Stripe." /></a>
-</p>
-<p align="center">
-  <a href="https://cortex-sooty.vercel.app/"><img src="./assets/work-cortex.svg" width="49%" alt="Cortex — task manager with smart scheduling and a drag-and-drop calendar. React, Vite." /></a>
-  <a href="https://www.bassemhazem.com"><img src="./assets/work-portfolio.svg" width="49%" alt="Portfolio — bassemhazem.com, with a scroll-driven cinematic hero, articles CMS and admin with 2FA. Next.js 15, NestJS, MongoDB, GSAP, Tailwind." /></a>
-</p>
-
-<p align="center"><sub>Source: <a href="https://github.com/BassemHazemDev/PayFlowProd">PayFlow</a> · <a href="https://github.com/BassemHazemDev/Cortex-Task-Manager">Cortex</a></sub></p>
-
 <img src="./assets/stack.svg" width="100%" alt="Stack: TypeScript, React, Next.js, Node.js, Nest.js, Express, MongoDB, Tailwind CSS, React Native, Redis, RAG pipelines, FastAPI, Qdrant, Gemini, Docker, Cloudflare WAF, system design, Agile and Scrum, code review, PRDs." />
 
 <details>
@@ -60,13 +41,6 @@
 <!--ARTICLES:END-->
 
 <img src="./assets/contributions.svg" width="100%" alt="GitHub contributions over the last year" />
-
-<img src="./assets/head-words.svg" width="100%" alt="In their words" />
-
-<p align="center">
-  <a href="https://www.linkedin.com/in/mahmoud-abdelbaky-2ab528243/"><img src="./assets/quote-1.svg" width="49%" alt="“He actually reviews PRs, cares about code quality, and always makes room for refactoring and system design ideas in the sprint.” — Mahmoud Abdelbaky, Backend Engineer, reported to Bassem at RockAI Dev" /></a>
-  <a href="https://www.linkedin.com/in/boltawy/"><img src="./assets/quote-2.svg" width="49%" alt="“Bassem bridges the gap between technical execution and business vision — managing tight timelines with urgency, never sacrificing code quality or stability.” — Zeyad I. Hamdalla, Full-Stack Engineer, reported to Bassem at RockAI Dev" /></a>
-</p>
 
 <details>
 <summary><b>Education and certifications</b></summary>
