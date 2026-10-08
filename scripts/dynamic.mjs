@@ -70,48 +70,157 @@ const SCALE = ["rgba(120,200,230,0.08)", "#0f4753", c.teal, c.cyan, c.emerald];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const utc = (date) => new Date(`${date}T00:00:00Z`);
 
-// The game loop, as fractions of one cycle: Pac-Man crosses the whole year,
-// everything fades, then the board respawns and it starts again.
-const GAME = { cycle: 52, run: 0.88, exit: 0.93, respawn: 0.97, scared: 3.2 };
+// One game: Pac-Man clears the year, everything fades, the board respawns.
+// Times inside a cycle are fractions of it.
+const GAME = { tick: 0.11, run: 0.88, exit: 0.93, respawn: 0.97, scaredTicks: 30, maxSteps: 1100 };
 const GHOSTS = [
-  { colour: c.ember, lag: 1.6 },
-  { colour: "#7aa7ff", lag: 2.5 },
-  { colour: "#fe842e", lag: 3.4 },
+  { colour: c.ember, wander: 0.15 },
+  { colour: "#7aa7ff", wander: 0.4 },
+  { colour: "#fe842e", wander: 0.65 },
 ];
 const SCARED = "#3b5bdb";
+const ROWS = 7;
+const DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const frac = (n) => +n.toFixed(4);
 
-/** Pac-Man eating his way through the year, chased by three ghosts. */
-function pacman({ cols, x0, step, cell, gridTop, pelletTimes }) {
-  const mid = cell / 2;
-  const top = gridTop + mid;
-  const bottom = gridTop + 6 * step + mid;
-  let route = "";
-  for (let i = 0; i < cols; i++) {
-    const x = r1(x0 + i * step + mid);
-    const [from, to] = i % 2 ? [bottom, top] : [top, bottom];
-    route += `${i ? "L" : "M"}${x} ${r1(from)}L${x} ${r1(to)}`;
-  }
-
-  const move = (lag = 0) => {
-    const start = frac(lag / GAME.cycle);
-    const points = lag ? `0;0;1;1` : `0;1;1`;
-    const times = lag ? `0;${start};${frac(GAME.run + start)};1` : `0;${GAME.run};1`;
-    return `<animateMotion dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="linear" keyPoints="${points}" keyTimes="${times}" path="${route}"`;
+/** Small seeded generator, so the same contribution data always draws the same game. */
+function seeded(text) {
+  let a = 2166136261;
+  for (const ch of text) a = Math.imul(a ^ ch.charCodeAt(0), 16777619);
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
-  const visible = (from) =>
-    `<animate attributeName="opacity" dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="discrete" values="${from ? "0;1;0" : "1;0"}" keyTimes="${from ? `0;${frac(from)};${GAME.exit}` : `0;${GAME.exit}`}"/>`;
+}
 
-  // Ghosts turn blue for a few seconds after each power pellet (the busiest days).
+/**
+ * Plays the game on the grid, one cell per tick. Pac-Man heads for the nearest
+ * uneaten day, keeping to straight runs and steering round ghosts; ghosts chase
+ * him (each with its own tendency to wander) and run away after a power pellet.
+ */
+function simulate(levels, cols, seed) {
+  const rand = seeded(seed);
+  const pick = (list) => list[Math.floor(rand() * list.length)];
+  const key = (x, y) => `${x},${y}`;
+  const inside = (x, y) => x >= 0 && x < cols && y >= 0 && y < ROWS;
+  const dist = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+
+  const food = new Map([...levels].filter(([, level]) => level > 0));
+  const eatenAt = new Map();
+  const pellets = [];
+  const pac = { x: 0, y: 3, dx: 1, dy: 0, path: [[0, 3]] };
+  const mid = Math.floor(cols / 2);
+  const ghosts = GHOSTS.map((g, i) => ({ ...g, x: mid - 1 + i, y: 3, dx: 0, dy: -1, path: [[mid - 1 + i, 3]] }));
+  let scaredUntil = -1;
+  let target = null;
+
+  const eat = (tick) => {
+    const k = key(pac.x, pac.y);
+    if (!food.has(k)) return;
+    if (food.get(k) === 4) {
+      pellets.push(tick);
+      scaredUntil = tick + GAME.scaredTicks;
+    }
+    food.delete(k);
+    eatenAt.set(k, tick);
+  };
+  eat(0);
+
+  let tick = 0;
+  while (food.size && tick < GAME.maxSteps) {
+    tick++;
+    const scared = tick <= scaredUntil;
+
+    // Pac-Man
+    if (!target || !food.has(key(target.x, target.y))) {
+      let best = Infinity;
+      let nearest = [];
+      for (const k of food.keys()) {
+        const [x, y] = k.split(",").map(Number);
+        const d = dist(pac, { x, y });
+        if (d < best) {
+          best = d;
+          nearest = [];
+        }
+        if (d === best) nearest.push({ x, y });
+      }
+      target = pick(nearest);
+    }
+    const danger = (x, y) => !scared && ghosts.some((g) => dist(g, { x, y }) <= 1);
+    const moves = DIRS.map(([dx, dy]) => ({ dx, dy, x: pac.x + dx, y: pac.y + dy })).filter((m) => inside(m.x, m.y));
+    const score = (m) =>
+      dist(m, target) * 10 +
+      (danger(m.x, m.y) ? 1000 : 0) +
+      (m.dx === -pac.dx && m.dy === -pac.dy ? 6 : 0) -
+      (m.dx === pac.dx && m.dy === pac.dy ? 3 : 0) +
+      rand() * 4;
+    const step = moves.map((m) => ({ m, s: score(m) })).sort((a, b) => a.s - b.s)[0].m;
+    Object.assign(pac, { x: step.x, y: step.y, dx: step.dx, dy: step.dy });
+    pac.path.push([pac.x, pac.y]);
+    eat(tick);
+
+    // Ghosts: never reverse unless cornered, never walk onto Pac-Man or each other.
+    for (const g of ghosts) {
+      const free = (m) => inside(m.x, m.y) && !(m.x === pac.x && m.y === pac.y) && !ghosts.some((o) => o !== g && o.x === m.x && o.y === m.y);
+      const all = DIRS.map(([dx, dy]) => ({ dx, dy, x: g.x + dx, y: g.y + dy })).filter(free);
+      const forward = all.filter((m) => !(m.dx === -g.dx && m.dy === -g.dy));
+      const options = forward.length ? forward : all;
+      if (!options.length) {
+        // Boxed in: bounce in place for a tick so its clock stays in step with the others.
+        g.path.push([g.x, g.y]);
+        continue;
+      }
+      let move;
+      if (rand() < g.wander) move = pick(options);
+      else {
+        const ranked = options.map((m) => ({ m, d: dist(m, pac) + rand() })).sort((a, b) => a.d - b.d);
+        move = (scared ? ranked.at(-1) : ranked[0]).m;
+      }
+      Object.assign(g, { x: move.x, y: move.y, dx: move.dx, dy: move.dy });
+      g.path.push([g.x, g.y]);
+    }
+  }
+  return { steps: tick, eatenAt, pellets, pac: pac.path, ghosts: ghosts.map((g) => g.path) };
+}
+
+/** Pac-Man and the ghosts, each following its simulated route at one cell per tick. */
+function actors(game, { x0, step, cell, gridTop, cycle }) {
+  const px = (x) => r1(x0 + x * step + cell / 2);
+  const py = (y) => r1(gridTop + y * step + cell / 2);
+  // animateMotion paces by distance, so every tick must cover one cell: a ghost that
+  // had to wait gets a there-and-back hop of the same length instead of standing still.
+  const route = (cells) => {
+    let d = `M${px(cells[0][0])} ${py(cells[0][1])}`;
+    for (let i = 1; i < cells.length; i++) {
+      const [ax, ay] = cells[i - 1];
+      const [x, y] = cells[i];
+      if (ax === x && ay === y) {
+        d += `L${px(x)} ${r1(py(y) - step / 2)}L${px(x)} ${py(y)}`;
+        continue;
+      }
+      const next = cells[i + 1];
+      const straight = next && next[0] - x === x - ax && next[1] - y === y - ay;
+      if (!straight) d += `L${px(x)} ${py(y)}`;
+    }
+    return d;
+  };
+  const motion = (cells, extra = "") =>
+    `<animateMotion dur="${cycle}s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1;1" keyTimes="0;${GAME.run};1" path="${route(cells)}"${extra}/>`;
+  const visible = `<animate attributeName="opacity" dur="${cycle}s" repeatCount="indefinite" calcMode="discrete" values="1;0" keyTimes="0;${GAME.exit}"/>`;
+
+  // Ghosts turn blue while a power pellet (one of the busiest days) is active.
   const windows = [];
-  for (const t of [...pelletTimes].sort((a, b) => a - b)) {
-    const end = Math.min(t + GAME.scared / GAME.cycle, GAME.exit);
-    if (windows.length && t <= windows.at(-1)[1]) windows.at(-1)[1] = Math.max(windows.at(-1)[1], end);
-    else if (t > 0 && t < end) windows.push([t, end]);
+  for (const tick of game.pellets) {
+    const from = (tick / game.steps) * GAME.run;
+    const to = Math.min(((tick + GAME.scaredTicks) / game.steps) * GAME.run, GAME.exit);
+    if (windows.length && from <= windows.at(-1)[1]) windows.at(-1)[1] = Math.max(windows.at(-1)[1], to);
+    else if (from > 0 && from < to) windows.push([from, to]);
   }
   const fright = (colour) =>
     windows.length
-      ? `<animate attributeName="fill" dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="discrete" values="${colour};${windows.map(() => `${SCARED};${colour}`).join(";")}" keyTimes="0;${windows.map(([a, b]) => `${frac(a)};${frac(b)}`).join(";")}"/>`
+      ? `<animate attributeName="fill" dur="${cycle}s" repeatCount="indefinite" calcMode="discrete" values="${colour};${windows.map(() => `${SCARED};${colour}`).join(";")}" keyTimes="0;${windows.map(([a, b]) => `${frac(a)};${frac(b)}`).join(";")}"/>`
       : "";
 
   const r = cell * 0.62;
@@ -127,15 +236,15 @@ function pacman({ cols, x0, step, cell, gridTop, pelletTimes }) {
   const eye = (x) =>
     `<circle cx="${r1(x)}" cy="${r1(-g * 0.25)}" r="${r1(g * 0.27)}" fill="#fff"/><circle cx="${r1(x + g * 0.1)}" cy="${r1(-g * 0.25)}" r="${r1(g * 0.13)}" fill="${c.bg}"/>`;
 
-  const ghosts = GHOSTS.map(
-    ({ colour, lag }) =>
-      `<g opacity="0">${visible(lag / GAME.cycle)}${move(lag)}/><path d="${ghostBody}" fill="${colour}">${fright(colour)}</path>${eye(-g * 0.4)}${eye(g * 0.4)}</g>`,
-  ).join("");
-
+  const ghosts = game.ghosts
+    .map(
+      (cells, i) =>
+        `<g>${visible}${motion(cells)}<path d="${ghostBody}" fill="${GHOSTS[i].colour}">${fright(GHOSTS[i].colour)}</path>${eye(-g * 0.4)}${eye(g * 0.4)}</g>`,
+    )
+    .join("");
   const hero =
-    `<g>${visible()}${move()} rotate="auto"/>` +
+    `<g>${visible}${motion(game.pac, ' rotate="auto"')}` +
     `<path fill="url(#pac)" d="${jaw(35)}"><animate attributeName="d" dur=".32s" repeatCount="indefinite" values="${jaw(35)};${jaw(3)};${jaw(35)}"/></path></g>`;
-
   return ghosts + hero;
 }
 
@@ -165,8 +274,10 @@ function contributionsSvg(days) {
   const gridTop = 196;
   const x0 = PAD + (53 - cols.length) * step;
 
-  const routeSteps = cols.length * 7 - 1;
-  const pelletTimes = [];
+  const levels = new Map();
+  cols.forEach((week, i) => week.forEach((d) => levels.set(`${i},${d.dow}`, d.level)));
+  const game = simulate(levels, cols.length, `${days.at(-1).date}:${days.reduce((n, d) => n + d.count, 0)}`);
+  const cycle = Math.round((game.steps * GAME.tick) / GAME.run);
   let grid = "";
   let months = "";
   let lastMonth = -1;
@@ -183,17 +294,20 @@ function contributionsSvg(days) {
       const rect = `x="${r1(x)}" y="${r1(gridTop + d.dow * step)}" width="${r1(cell)}" height="${r1(cell)}" rx="2.6"`;
       grid += `<rect ${rect} fill="${SCALE[0]}"/>`;
       if (!d.level) continue;
-      // Pac-Man snakes down even columns and up odd ones; each column is 7 steps of the route.
-      const at = (i * 7 + (i % 2 ? 6 - d.dow : d.dow)) / routeSteps;
-      const eaten = `<animate attributeName="opacity" dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="discrete" values="1;0;1" keyTimes="0;${frac(at * GAME.run)};${GAME.respawn}"/>`;
+      // Days the game never reached (it stops at a step limit) simply stay lit.
+      const tick = game.eatenAt.get(`${i},${d.dow}`);
+      const at = tick ? frac((tick / game.steps) * GAME.run) : 0;
+      const eaten =
+        tick == null
+          ? ""
+          : `<animate attributeName="opacity" dur="${cycle}s" repeatCount="indefinite" calcMode="discrete" values="${at ? "1;0;1" : "0;1"}" keyTimes="${at ? `0;${at};` : "0;"}${GAME.respawn}"/>`;
       const dot = `<rect ${rect} fill="${SCALE[d.level]}">${eaten}</rect>`;
       // The pulse sits on a wrapper: a CSS animation on the rect itself would override the SMIL one.
       grid += d.level === 4 ? `<g class="pp">${dot}</g>` : dot;
-      if (d.level === 4) pelletTimes.push(at * GAME.run);
     }
   });
 
-  const marker = pacman({ cols: cols.length, x0, step, cell, gridTop, pelletTimes });
+  const marker = actors(game, { x0, step, cell, gridTop, cycle });
 
   const total = days.reduce((n, d) => n + d.count, 0);
   const active = days.filter((d) => d.count).length;

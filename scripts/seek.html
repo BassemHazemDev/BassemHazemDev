@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#0d1117"><div id="a" style="width:880px;margin:10px auto"></div>
+<script>
+// Inline one asset and freeze its SMIL clock at ?t=<seconds>, to inspect a moment of an animation.
+const q=new URLSearchParams(location.search);
+fetch('../assets/'+q.get('s')+'.svg',{cache:'no-store'}).then(r=>r.text()).then(t=>{
+  document.getElementById('a').innerHTML=t;
+  const svg=document.querySelector('svg');svg.pauseAnimations();svg.setCurrentTime(+q.get('t')||0);
+});
+</script>
