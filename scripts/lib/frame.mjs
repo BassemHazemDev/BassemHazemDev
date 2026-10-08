@@ -33,12 +33,12 @@ export function card(doc, { lights = [], drift = true } = {}) {
   };
 }
 
-/** Small mono eyebrow, e.g. "02 — IMPACT", with a hairline running to the right edge. */
-export function eyebrow(doc, index, title, { y = 58 } = {}) {
-  const num = doc.text(index, { x: PAD, y, size: 12.5, font: "b", fill: c.cyan, tracking: 0.12 });
-  const label = doc.text(title.toUpperCase(), { x: PAD + 34, y, size: 12.5, font: "c", fill: c.muted, tracking: 0.26 });
-  const end = PAD + 34 + measure(title.toUpperCase(), { size: 12.5, font: "c", tracking: 0.26 }) + 18;
-  return `${num}${label}<line x1="${r1(end)}" y1="${y - 4}" x2="${W - PAD}" y2="${y - 4}" stroke="${c.line}"/>`;
+/** Small mono eyebrow, e.g. "02 — CONTRIBUTIONS", with a hairline running to the right edge. */
+export function eyebrow(doc, index, title, { y = 58, pad = PAD } = {}) {
+  const num = doc.text(index, { x: pad, y, size: 12.5, font: "b", fill: c.cyan, tracking: 0.12 });
+  const label = doc.text(title.toUpperCase(), { x: pad + 34, y, size: 12.5, font: "c", fill: c.muted, tracking: 0.26 });
+  const end = pad + 34 + measure(title.toUpperCase(), { size: 12.5, font: "c", tracking: 0.26 }) + 18;
+  return `${num}${label}<line x1="${r1(end)}" y1="${y - 4}" x2="${doc.width - pad}" y2="${y - 4}" stroke="${c.line}"/>`;
 }
 
 /** Pill chip. Returns markup and its width so callers can flow chips in a row. */

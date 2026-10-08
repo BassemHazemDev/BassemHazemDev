@@ -1,5 +1,5 @@
 // Refreshes the parts of the README that change over time: the contribution
-// heatmap and the latest articles. Run by .github/workflows/profile.yml.
+// heatmap, languages, recent repositories and latest articles. Run by .github/workflows/profile.yml.
 //   GH_TOKEN (optional) — with it, private contributions are counted too.
 import { readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { c, W, PAD, r1, esc } from "./lib/theme.mjs";
@@ -149,7 +149,7 @@ function contributionsSvg(days) {
 
   const body =
     bg.open +
-    eyebrow(doc, "03", "Contributions") +
+    eyebrow(doc, "02", "Contributions") +
     doc.outline(totalText, { x: PAD - 2, y: 138, size: 54, fill: "url(#val)", tracking: -0.02 }) +
     doc.text("contributions", { x: PAD + totalW + 12, y: 121, size: 14, fill: c.ink }) +
     doc.text("in the last year", { x: PAD + totalW + 12, y: 139, size: 14, fill: c.muted }) +
@@ -223,6 +223,101 @@ function updateReadme(articles) {
   if (next !== readme) writeFileSync(file, next);
 }
 
+// ───────────────────── languages and repositories ─────────────────────
+
+const HALF = 432; // these two cards sit side by side
+const HALF_H = 248;
+const HP = 26;
+const PALETTE = [c.cyan, c.emerald, "#7aa7ff", c.teal, "#fe842e"];
+const REPO_ROWS = 4;
+
+async function api(path) {
+  const token = process.env.GH_TOKEN;
+  const res = await fetch(path.startsWith("http") ? path : `https://api.github.com${path}`, {
+    headers: { ...UA, accept: "application/vnd.github+json", ...(token && { authorization: `Bearer ${token}` }) },
+  });
+  if (!res.ok) throw new Error(`${path}: ${res.status}`);
+  return res.json();
+}
+
+async function fetchRepos() {
+  const all = await api(`/users/${USER}/repos?per_page=100&sort=pushed`);
+  const own = all.filter((r) => !r.fork && !r.archived && r.name !== USER);
+  const bytes = new Map();
+  for (const langs of await Promise.all(own.map((r) => api(r.languages_url)))) {
+    for (const [name, n] of Object.entries(langs)) bytes.set(name, (bytes.get(name) ?? 0) + n);
+  }
+  return { repos: own, languages: [...bytes].sort((a, b) => b[1] - a[1]) };
+}
+
+function languagesSvg(languages, repoCount) {
+  const doc = new Doc(HALF, HALF_H);
+  const bg = card(doc, { lights: [[0, 0, 260, c.cyan, 0.15]], drift: false });
+  const total = languages.reduce((n, [, b]) => n + b, 0);
+  const top = languages.slice(0, PALETTE.length).map(([name, b], i) => ({ name, share: b / total, colour: PALETTE[i] }));
+  const rest = 1 - top.reduce((n, l) => n + l.share, 0);
+  if (rest > 0.001) top.push({ name: "Other", share: rest, colour: c.muted });
+
+  const barW = HALF - HP * 2;
+  const barY = 84;
+  doc.defs.push(`<clipPath id="bar"><rect x="${HP}" y="${barY}" width="${barW}" height="10" rx="5"/></clipPath>`);
+  let x = HP;
+  const segments = top
+    .map((l) => {
+      const w = l.share * barW;
+      const rect = `<rect x="${r1(x)}" y="${barY}" width="${r1(Math.max(w - 2, 1))}" height="10" fill="${l.colour}"/>`;
+      x += w;
+      return rect;
+    })
+    .join("");
+
+  const colW = barW / 2;
+  const legend = top
+    .map((l, i) => {
+      const lx = HP + (i % 2) * colW;
+      const ly = 132 + Math.floor(i / 2) * 30;
+      const pct = `${(l.share * 100).toFixed(l.share < 0.1 ? 1 : 0)}%`;
+      return (
+        `<circle cx="${lx + 5}" cy="${ly - 5}" r="5" fill="${l.colour}"/>` +
+        doc.text(truncate(l.name, colW - 78, { size: 14.5, font: "m" }), { x: lx + 18, y: ly, size: 14.5, font: "m" }) +
+        doc.text(pct, { x: lx + colW - 18, y: ly, size: 12, font: "c", fill: c.muted, anchor: "end" })
+      );
+    })
+    .join("");
+
+  const body =
+    bg.open +
+    eyebrow(doc, "03", "Languages", { y: 46, pad: HP }) +
+    `<g clip-path="url(#bar)">${segments}</g>` +
+    legend +
+    doc.text(`By code size across ${repoCount} public repositories`, { x: HP, y: HALF_H - 22, size: 12, fill: c.muted }) +
+    bg.close;
+  return doc.render(body, {
+    label: `Languages: ${top.map((l) => `${l.name} ${(l.share * 100).toFixed(0)}%`).join(", ")}`,
+  });
+}
+
+function reposSvg(repos) {
+  const doc = new Doc(HALF, HALF_H);
+  const bg = card(doc, { lights: [[HALF, 0, 260, c.emerald, 0.13]], drift: false });
+  const rows = repos
+    .slice(0, REPO_ROWS)
+    .map((repo, i) => {
+      const y = 88 + i * 40;
+      const pushed = new Date(repo.pushed_at);
+      const date = `${String(pushed.getUTCDate()).padStart(2, "0")} ${MONTHS[pushed.getUTCMonth()]} ${pushed.getUTCFullYear()}`.toUpperCase();
+      return (
+        (i ? `<line x1="${HP}" y1="${y - 20}" x2="${HALF - HP}" y2="${y - 20}" stroke="${c.line}"/>` : "") +
+        doc.text(truncate(repo.name, 230, { size: 15, font: "m" }), { x: HP, y, size: 15, font: "m" }) +
+        doc.text(date, { x: HALF - HP, y: y - 1, size: 11, font: "c", fill: c.muted, anchor: "end", tracking: 0.08 }) +
+        doc.text(repo.language ?? "—", { x: HP, y: y + 15, size: 11, font: "c", fill: c.cyan })
+      );
+    })
+    .join("");
+  const body = bg.open + eyebrow(doc, "04", "Recently pushed", { y: 46, pad: HP }) + rows + bg.close;
+  return doc.render(body, { label: `Recently pushed repositories: ${repos.slice(0, REPO_ROWS).map((r) => r.name).join(", ")}` });
+}
+
 // ───────────────────────────── run ──────────────────────────────
 
 // Each half is independent: if one source is down, keep the last good output for it.
@@ -244,6 +339,13 @@ await step("contributions", async () => {
     ? await fromGraphQL(token).catch((err) => (console.warn(`GraphQL failed (${err.message}), using the public page`), fromProfilePage()))
     : await fromProfilePage();
   writeFileSync(`${ROOT}assets/contributions.svg`, contributionsSvg(days));
+});
+
+await step("languages and repositories", async () => {
+  const { repos, languages } = await fetchRepos();
+  if (!repos.length || !languages.length) throw new Error("no public repositories");
+  writeFileSync(`${ROOT}assets/languages.svg`, languagesSvg(languages, repos.length));
+  writeFileSync(`${ROOT}assets/repos.svg`, reposSvg(repos));
 });
 
 await step("articles", async () => {

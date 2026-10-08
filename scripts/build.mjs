@@ -3,9 +3,9 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { ROOT } from "./data.mjs";
 import { hero } from "./sections/hero.mjs";
 import { stackSection } from "./sections/stack.mjs";
-import { pills, headings, footer } from "./sections/chrome.mjs";
+import { pills, headings } from "./sections/chrome.mjs";
 
-const BUDGET_KB = { hero: 600 };
+const BUDGET_KB = {};
 const DEFAULT_BUDGET_KB = 150;
 
 const sections = {
@@ -13,7 +13,6 @@ const sections = {
   pills,
   headings,
   stack: stackSection,
-  footer,
 };
 
 const only = process.argv.slice(2);
