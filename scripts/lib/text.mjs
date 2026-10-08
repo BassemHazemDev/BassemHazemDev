@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
 import opentype from "opentype.js";
-import { c, r1 } from "./theme.mjs";
+import { c, r1, esc } from "./theme.mjs";
 
 const require = createRequire(import.meta.url);
 
@@ -73,6 +73,7 @@ export class Doc {
     const ox = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
     let uses = "";
     for (const { g, x: gx } of l.items) {
+      if (g.index === 0) console.warn(`missing glyph in "${str}" (font ${font})`);
       const d = g.getPath(0, 0, l.upm).toPathData(0);
       if (!d) continue;
       const id = `${font}${g.index.toString(36)}`;
@@ -105,7 +106,7 @@ export class Doc {
       "@media (prefers-reduced-motion:reduce){*{animation:none!important}}",
     ].join("");
     return (
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.width} ${this.height}" width="${this.width}" height="${this.height}" role="img"${label ? ` aria-label="${label}"` : ""}>` +
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${this.width} ${this.height}" width="${this.width}" height="${this.height}" role="img"${label ? ` aria-label="${esc(label)}"` : ""}>` +
       `<style>${css}</style><defs>${this.defs.join("")}${glyphDefs}</defs>${body}</svg>`
     );
   }

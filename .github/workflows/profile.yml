@@ -1,0 +1,60 @@
+name: Refresh profile README
+
+# Redraws the contribution heatmap and the latest-articles cards.
+on:
+  schedule:
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "scripts/**"
+      - ".github/workflows/profile.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-readme
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: scripts
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/package-lock.json
+
+      # sharp is only needed for the local image build, so skip dev dependencies.
+      - run: npm ci --omit=dev
+
+      - name: Generate contributions and articles
+        run: node dynamic.mjs
+        env:
+          # PACMAN_TOKEN is a personal token, so private contributions are counted.
+          GH_TOKEN: ${{ secrets.PACMAN_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.repository_owner }}
+
+      - name: Commit if anything changed
+        if: always()
+        working-directory: .
+        run: |
+          git add README.md assets
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Refresh contributions and articles"
+          git push

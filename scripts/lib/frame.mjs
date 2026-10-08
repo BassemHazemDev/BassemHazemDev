@@ -71,3 +71,25 @@ export function chipRow(doc, labels, { x, y, maxX = W - PAD, gap = 8, h = 28, ..
   }
   return { svg, bottom: cy + h, right: cx - gap };
 }
+
+/** Glass tile used inside cards (the portfolio's `.glass` surface, minus the blur). */
+export function tile(doc, { x, y, w, h, rx = 16, accent } = {}) {
+  if (!doc.defs.some((d) => d.includes('id="tile"'))) {
+    doc.defs.push(
+      `<linearGradient id="tile" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#142838" stop-opacity=".6"/><stop offset="1" stop-color="#08101a" stop-opacity=".6"/></linearGradient>`,
+    );
+  }
+  return (
+    `<rect x="${r1(x)}" y="${r1(y)}" width="${r1(w)}" height="${r1(h)}" rx="${rx}" fill="url(#tile)" stroke="${c.line}"/>` +
+    (accent ? `<rect x="${r1(x + 22)}" y="${r1(y)}" width="34" height="2.5" rx="1.25" fill="${accent}"/>` : "")
+  );
+}
+
+/** Diagonal "open link" arrow, drawn so we don't depend on a font having the glyph. */
+export function arrow(x, y, size = 9, colour = c.cyan, width = 1.6) {
+  return `<path d="M${r1(x)} ${r1(y + size)}L${r1(x + size)} ${r1(y)}M${r1(x + size * 0.25)} ${r1(y)}H${r1(x + size)}V${r1(y + size * 0.75)}" fill="none" stroke="${colour}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"/>`;
+}
+
+export const BLINK = "@keyframes blink{50%{opacity:0}}.cur{animation:blink 1.1s steps(1) infinite}";
+export const PING =
+  "@keyframes ping{0%{transform:scale(1);opacity:.7}80%,100%{transform:scale(3.2);opacity:0}}.ping{transform-box:fill-box;transform-origin:center;animation:ping 2.2s cubic-bezier(0,0,.2,1) infinite}";

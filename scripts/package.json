@@ -4,12 +4,15 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "dynamic": "node dynamic.mjs"
+    "dynamic": "node dynamic.mjs",
+    "preview": "node serve.mjs"
   },
-  "devDependencies": {
+  "dependencies": {
     "@fontsource/jetbrains-mono": "^5.0.0",
     "@fontsource/space-grotesk": "^5.0.0",
-    "opentype.js": "^1.3.4",
+    "opentype.js": "^1.3.4"
+  },
+  "devDependencies": {
     "sharp": "^0.34.0"
   }
 }

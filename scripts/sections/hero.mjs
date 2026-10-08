@@ -75,7 +75,7 @@ export async function hero() {
       return `<g clip-path="url(#t${i})">${doc.text(role, { x: tx, y: ty, size, font: "c", fill: c.ink })}</g>`;
     })
     .join("");
-  const cursor = `<rect class="cur" x="${r1(tx)}" y="${ty - 17}" width="${r1(cw * 0.9)}" height="21" rx="1.5" fill="${c.cyan}">${animate("x", cursorEvents, (n) => tx + n * cw + 2)}</rect>`;
+  const cursor = `<rect class="cur" x="${r1(tx + lines[0].length * cw + 2)}" y="${ty - 17}" width="${r1(cw * 0.9)}" height="21" rx="1.5" fill="${c.cyan}">${animate("x", cursorEvents, (n) => tx + n * cw + 2)}</rect>`;
 
   const tagline = doc.para(profile.tagline, { x: PAD, y: 322, width: 372, size: 16, fill: c.muted, lineHeight: 1.5 });
   const chips = chipRow(doc, ["Next.js", "NestJS", "MongoDB", "AI / RAG"], { x: PAD, y: 366, maxX: 430 });
