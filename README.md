@@ -5,7 +5,7 @@
   (see .github/workflows/profile.yml).
 -->
 
-<a href="https://www.bassemhazem.com"><img src="./assets/hero.svg" width="100%" alt="Bassem Hazem — Full Stack Developer and Technical Project Manager in Alexandria, Egypt. I build scalable SaaS and AI products, and lead the teams that ship them." /></a>
+<a href="https://www.bassemhazem.com"><img src="./assets/hero.svg" width="100%" alt="Hi, I'm Bassem — full stack developer and technical project manager in Alexandria, Egypt. I build SaaS and AI products with TypeScript, Next.js, NestJS and MongoDB, and lead the team that ships them." /></a>
 
 <p align="center">
   <a href="https://www.bassemhazem.com"><img src="./assets/pill-site.svg" height="40" alt="bassemhazem.com" /></a>
