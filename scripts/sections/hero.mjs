@@ -10,7 +10,7 @@ const AVATAR = 212;
 /** Head-and-shoulders crop of the portrait, as an inline image. */
 async function avatar() {
   const file = pub("frames/desktop/frame_0121.webp");
-  const { width, height } = await sharp(file).metadata();
+  const { width } = await sharp(file).metadata();
   const size = Math.round(width * 0.62);
   const buf = await sharp(file)
     .extract({ left: Math.round(width * 0.21), top: 0, width: size, height: size })
