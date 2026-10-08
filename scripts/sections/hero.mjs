@@ -7,13 +7,13 @@ import { profile, pub } from "../data.mjs";
 const H = 300;
 const AVATAR = 212;
 
-/** Head-and-shoulders crop of the portrait, as an inline image. */
+/** Square crop centred on the face, wide enough to keep the shoulders in frame. */
 async function avatar() {
   const file = pub("frames/desktop/frame_0121.webp");
   const { width } = await sharp(file).metadata();
-  const size = Math.round(width * 0.62);
+  const size = Math.round(width * 0.733);
   const buf = await sharp(file)
-    .extract({ left: Math.round(width * 0.21), top: 0, width: size, height: size })
+    .extract({ left: Math.round(width * 0.097), top: Math.round(width * 0.05), width: size, height: size })
     .resize(AVATAR * 2)
     .webp({ quality: 78 })
     .toBuffer();
