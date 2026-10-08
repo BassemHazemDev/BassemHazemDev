@@ -4,7 +4,7 @@
 import { readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { c, W, PAD, r1, esc } from "./lib/theme.mjs";
 import { Doc, measure } from "./lib/text.mjs";
-import { card, eyebrow, arrow, PING } from "./lib/frame.mjs";
+import { card, eyebrow, arrow } from "./lib/frame.mjs";
 import { ROOT, profile } from "./data.mjs";
 
 const USER = process.env.GH_USER ?? "BassemHazemDev";
@@ -70,6 +70,75 @@ const SCALE = ["rgba(120,200,230,0.08)", "#0f4753", c.teal, c.cyan, c.emerald];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const utc = (date) => new Date(`${date}T00:00:00Z`);
 
+// The game loop, as fractions of one cycle: Pac-Man crosses the whole year,
+// everything fades, then the board respawns and it starts again.
+const GAME = { cycle: 52, run: 0.88, exit: 0.93, respawn: 0.97, scared: 3.2 };
+const GHOSTS = [
+  { colour: c.ember, lag: 1.6 },
+  { colour: "#7aa7ff", lag: 2.5 },
+  { colour: "#fe842e", lag: 3.4 },
+];
+const SCARED = "#3b5bdb";
+const frac = (n) => +n.toFixed(4);
+
+/** Pac-Man eating his way through the year, chased by three ghosts. */
+function pacman({ cols, x0, step, cell, gridTop, pelletTimes }) {
+  const mid = cell / 2;
+  const top = gridTop + mid;
+  const bottom = gridTop + 6 * step + mid;
+  let route = "";
+  for (let i = 0; i < cols; i++) {
+    const x = r1(x0 + i * step + mid);
+    const [from, to] = i % 2 ? [bottom, top] : [top, bottom];
+    route += `${i ? "L" : "M"}${x} ${r1(from)}L${x} ${r1(to)}`;
+  }
+
+  const move = (lag = 0) => {
+    const start = frac(lag / GAME.cycle);
+    const points = lag ? `0;0;1;1` : `0;1;1`;
+    const times = lag ? `0;${start};${frac(GAME.run + start)};1` : `0;${GAME.run};1`;
+    return `<animateMotion dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="linear" keyPoints="${points}" keyTimes="${times}" path="${route}"`;
+  };
+  const visible = (from) =>
+    `<animate attributeName="opacity" dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="discrete" values="${from ? "0;1;0" : "1;0"}" keyTimes="${from ? `0;${frac(from)};${GAME.exit}` : `0;${GAME.exit}`}"/>`;
+
+  // Ghosts turn blue for a few seconds after each power pellet (the busiest days).
+  const windows = [];
+  for (const t of [...pelletTimes].sort((a, b) => a - b)) {
+    const end = Math.min(t + GAME.scared / GAME.cycle, GAME.exit);
+    if (windows.length && t <= windows.at(-1)[1]) windows.at(-1)[1] = Math.max(windows.at(-1)[1], end);
+    else if (t > 0 && t < end) windows.push([t, end]);
+  }
+  const fright = (colour) =>
+    windows.length
+      ? `<animate attributeName="fill" dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="discrete" values="${colour};${windows.map(() => `${SCARED};${colour}`).join(";")}" keyTimes="0;${windows.map(([a, b]) => `${frac(a)};${frac(b)}`).join(";")}"/>`
+      : "";
+
+  const r = cell * 0.62;
+  const jaw = (deg) => {
+    const a = (deg * Math.PI) / 180;
+    const x = +(r * Math.cos(a)).toFixed(2);
+    const y = +(r * Math.sin(a)).toFixed(2);
+    return `M0 0L${x} ${-y}A${r1(r)} ${r1(r)} 0 1 0 ${x} ${y}Z`;
+  };
+  const g = cell * 0.56;
+  const ghostBody = `M${-g} ${g}V${-g * 0.2}A${g} ${g} 0 0 1 ${g} ${-g * 0.2}V${g}L${g * 0.66} ${g * 0.68}L${g * 0.33} ${g}L0 ${g * 0.68}L${-g * 0.33} ${g}L${-g * 0.66} ${g * 0.68}Z`
+    .replace(/-?\d+\.\d+/g, (n) => r1(+n));
+  const eye = (x) =>
+    `<circle cx="${r1(x)}" cy="${r1(-g * 0.25)}" r="${r1(g * 0.27)}" fill="#fff"/><circle cx="${r1(x + g * 0.1)}" cy="${r1(-g * 0.25)}" r="${r1(g * 0.13)}" fill="${c.bg}"/>`;
+
+  const ghosts = GHOSTS.map(
+    ({ colour, lag }) =>
+      `<g opacity="0">${visible(lag / GAME.cycle)}${move(lag)}/><path d="${ghostBody}" fill="${colour}">${fright(colour)}</path>${eye(-g * 0.4)}${eye(g * 0.4)}</g>`,
+  ).join("");
+
+  const hero =
+    `<g>${visible()}${move()} rotate="auto"/>` +
+    `<path fill="url(#pac)" d="${jaw(35)}"><animate attributeName="d" dur=".32s" repeatCount="indefinite" values="${jaw(35)};${jaw(3)};${jaw(35)}"/></path></g>`;
+
+  return ghosts + hero;
+}
+
 function contributionsSvg(days) {
   const H = 356;
   const doc = new Doc(W, H);
@@ -77,7 +146,10 @@ function contributionsSvg(days) {
   doc.defs.push(
     `<linearGradient id="val" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="${c.ink}"/><stop offset=".55" stop-color="${c.cyan}"/><stop offset="1" stop-color="${c.emerald}"/></linearGradient>`,
   );
-  doc.css.push("@keyframes wave{0%,60%,100%{opacity:1}30%{opacity:.45}}.w{animation:wave 7s ease-in-out infinite}", PING);
+  doc.defs.push(
+    `<linearGradient id="pac" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c.cyan}"/><stop offset="1" stop-color="${c.emerald}"/></linearGradient>`,
+  );
+  doc.css.push("@keyframes pellet{50%{opacity:.55}}.pp{animation:pellet 1.2s ease-in-out infinite}");
 
   // Columns are weeks starting on Sunday, like GitHub's own graph.
   const weeks = [];
@@ -93,6 +165,8 @@ function contributionsSvg(days) {
   const gridTop = 196;
   const x0 = PAD + (53 - cols.length) * step;
 
+  const routeSteps = cols.length * 7 - 1;
+  const pelletTimes = [];
   let grid = "";
   let months = "";
   let lastMonth = -1;
@@ -105,16 +179,21 @@ function contributionsSvg(days) {
       lastLabelX = x;
     }
     lastMonth = month;
-    const cells = week
-      .map((d) => `<rect x="${r1(x)}" y="${r1(gridTop + d.dow * step)}" width="${r1(cell)}" height="${r1(cell)}" rx="2.6" fill="${SCALE[d.level]}"/>`)
-      .join("");
-    grid += `<g class="w" style="animation-delay:${(i * 0.07).toFixed(2)}s">${cells}</g>`;
+    for (const d of week) {
+      const rect = `x="${r1(x)}" y="${r1(gridTop + d.dow * step)}" width="${r1(cell)}" height="${r1(cell)}" rx="2.6"`;
+      grid += `<rect ${rect} fill="${SCALE[0]}"/>`;
+      if (!d.level) continue;
+      // Pac-Man snakes down even columns and up odd ones; each column is 7 steps of the route.
+      const at = (i * 7 + (i % 2 ? 6 - d.dow : d.dow)) / routeSteps;
+      const eaten = `<animate attributeName="opacity" dur="${GAME.cycle}s" repeatCount="indefinite" calcMode="discrete" values="1;0;1" keyTimes="0;${frac(at * GAME.run)};${GAME.respawn}"/>`;
+      const dot = `<rect ${rect} fill="${SCALE[d.level]}">${eaten}</rect>`;
+      // The pulse sits on a wrapper: a CSS animation on the rect itself would override the SMIL one.
+      grid += d.level === 4 ? `<g class="pp">${dot}</g>` : dot;
+      if (d.level === 4) pelletTimes.push(at * GAME.run);
+    }
   });
 
-  const today = cols.at(-1).at(-1);
-  const tx = x0 + (cols.length - 1) * step + cell / 2;
-  const tyy = gridTop + today.dow * step + cell / 2;
-  const marker = `<circle class="ping" cx="${r1(tx)}" cy="${r1(tyy)}" r="${r1(cell / 2)}" fill="none" stroke="${c.emerald}" stroke-width="1.5"/>`;
+  const marker = pacman({ cols: cols.length, x0, step, cell, gridTop, pelletTimes });
 
   const total = days.reduce((n, d) => n + d.count, 0);
   const active = days.filter((d) => d.count).length;

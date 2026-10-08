@@ -17,7 +17,7 @@
 
 <img src="./assets/stack.svg" width="100%" alt="Stack: TypeScript, React, Next.js, Node.js, Nest.js, Express, MongoDB, Tailwind CSS, React Native, Redis, RAG pipelines, FastAPI, Qdrant, Gemini, Docker, Cloudflare WAF, system design, Agile and Scrum, code review, PRDs." />
 
-<img src="./assets/contributions.svg" width="100%" alt="GitHub contributions over the last year" />
+<img src="./assets/contributions.svg" width="100%" alt="My GitHub contributions over the last year, with Pac-Man eating through the graph while three ghosts chase him" />
 
 <p align="center">
   <img src="./assets/languages.svg" width="49%" alt="Most used languages across my public repositories" />
