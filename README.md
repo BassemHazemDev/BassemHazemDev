@@ -27,7 +27,7 @@
 <img src="./assets/head-writing.svg" width="100%" alt="Writing" />
 
 <!--ARTICLES:START-->
-<a href="https://www.bassemhazem.com/articles/backend-development/the-query-works-but-will-it-scale/"><img src="./assets/article-1.svg" width="100%" alt="The Query Works, But Will It Scale? — Backend Development" /></a>
-<a href="https://www.bassemhazem.com/articles/software-engineering/when-the-ui-has-pagination-but-the-system-doesnt/"><img src="./assets/article-2.svg" width="100%" alt="When the UI Has Pagination but the System Doesn't — Software Engineering" /></a>
-<a href="https://www.bassemhazem.com/articles/backend-development/seed-data-is-more-than-fake-data/"><img src="./assets/article-3.svg" width="100%" alt="Seed Data Is More Than Fake Data — Backend Development" /></a>
+<a href="https://www.bassemhazem.com/articles/software-engineering/ai-assisted-development-human-engineering-judgment/"><img src="./assets/article-1.svg" width="100%" alt="AI-Assisted Development: Why Human Engineering Judgment Still Matters — Software Engineering" /></a>
+<a href="https://www.bassemhazem.com/articles/backend-development/the-query-works-but-will-it-scale/"><img src="./assets/article-2.svg" width="100%" alt="The Query Works, But Will It Scale? — Backend Development" /></a>
+<a href="https://www.bassemhazem.com/articles/software-engineering/when-the-ui-has-pagination-but-the-system-doesnt/"><img src="./assets/article-3.svg" width="100%" alt="When the UI Has Pagination but the System Doesn't — Software Engineering" /></a>
 <!--ARTICLES:END-->
